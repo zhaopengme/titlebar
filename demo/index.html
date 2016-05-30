@@ -9,18 +9,29 @@
 	</div>
 	<script type="text/javascript" src="index.js"></script>
 	<script type="text/javascript">
-		var log = function(name) {
-			return function(e) {
-				console.log(name, e);
-			};
-		};
+	var titlebar = require('titlebar');
+    var electron = require('electron');
+    var ipcRenderer = electron.ipcRenderer;
+    var remote = electron.remote;
 
-		var t = titlebar()
-			.appendTo(document.body)
-			.on('close', log('close'))
-			.on('minimize', log('minimize'))
-			.on('fullscreen', log('fullscreen'))
-			.on('maximize', log('maximize'));
+    var t = titlebar();
+    t.appendTo(document.body);
+
+    t.on('close', function () {
+        remote.getCurrentWindow().close();
+    });
+
+    t.on('minimize', function () {
+        remote.getCurrentWindow().minimize();
+    });
+
+    t.on('fullscreen', function () {
+        var win = remote.getCurrentWindow();
+        if (win.isMaximized())
+            win.unmaximize();
+        else
+            win.maximize();
+    });
 	</script>
 </body>
 </html>
